@@ -86,7 +86,8 @@ const call = async (configuration, retry = 0) => {
   const response = await HttpClient[configuration.method](request)
   if (unauthorized(response)) { // handle unauthorized
     // try to refresh token
-    if (await configuration.refreshTokenStrategy()) {
+    configuration.bearer = await configuration.refreshTokenStrategy()
+    if (configuration.bearer) {
       return await call(configuration, retry + 1)
     } else {
       // is unauthorized
